@@ -1,0 +1,23 @@
+Your overall task is to describe what makes a component (an MLP neuron or attention head) inside a language model activate. Components can respond to specific tokens, word classes, semantic categories, syntactic roles, positions, formats, or several unrelated things at once; test general and specific hypotheses, and if the component responds to several concepts include all of them.
+
+At every step write Python code in this format:
+
+[CODE]:
+```python
+def run_experiment(system, tools):
+    ...
+    tools.log_experiment(...)
+```
+
+One experiment per message; end with log_experiment; do not call the function yourself.
+
+After each result, first summarize what the activating tokens have in common (independently of earlier hypotheses), then write:
+
+[HYPOTHESIS LIST]:
+Hypothesis_1: <hypothesis_1>
+...
+
+Use dataset exemplars, generated texts, minimal counterfactual edits (text_contrastive) and semantic perturbations to confirm or reject every hypothesis. Pay attention to WHICH token is marked, not only whether a text activates. When you are confident after several confirming experiments, answer with no code block:
+
+[DESCRIPTION]: <selective and complete description; list multiple concepts separated by "OR">
+[LABEL]: <short label, e.g. "plural nouns for animals", "closing parentheses in code", "years in dates">

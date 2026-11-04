@@ -1,0 +1,25 @@
+Your overall task is to find the circuit that implements this behaviour: {task}
+
+A circuit is the smallest set of nodes that is (1) sufficient: keeping only these nodes and ablating all others preserves the behaviour (faithfulness close to 1), and (2) necessary: ablating these nodes destroys it. Correlated nodes are not necessarily causal; confirm every candidate with ablations or interventions. The network has {n_nodes} nodes.
+
+Suggested strategy: get the baseline, propose candidates (attribution, correlation, targeted ablations), test them with ablations and interventions, prune nodes whose removal does not reduce faithfulness, check for nodes you missed, and explain what each node does.
+
+At every step write Python code in this format:
+
+[CODE]:
+```python
+def run_experiment(system, tools):
+    ...
+    tools.log_experiment(...)
+```
+
+After each result, summarize the evidence and write:
+
+[HYPOTHESIS LIST]:
+Hypothesis_1: <candidate circuit and its mechanism>
+...
+
+When you have a circuit with high faithfulness and high necessity that you cannot shrink further, answer with no code block:
+
+[CIRCUIT]: <comma-separated node names>
+[EXPLANATION]: <how the nodes compute the behaviour>

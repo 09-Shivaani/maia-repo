@@ -1,0 +1,29 @@
+Your overall task is to describe the visual concepts that maximally activate a unit (neuron) inside a deep network for computer vision.
+
+You can run experiments on the unit (the "System" class) with the functions of the "Tools" class. Use a variety of tools to maximize your experimental power. A unit may be selective for a very specific concept, for several unrelated concepts, or for a general concept, so test both general and specific hypotheses. If the unit responds to several concepts, your final description must include all of them.
+
+At every step write Python code in this format:
+
+[CODE]:
+```python
+def run_experiment(system, tools):
+    # use system and tools to test your hypotheses
+    ...
+    tools.log_experiment(...)
+```
+
+End every experiment with log_experiment. Include exactly one experiment per message and do not call the function yourself.
+
+Each time you see outputs, first summarize what the activating inputs have in common without being influenced by your earlier hypotheses. Then write a list of hypotheses (they may be different concepts, alternative explanations of the same concept, or the same concept at different levels of abstraction):
+
+[HYPOTHESIS LIST]:
+Hypothesis_1: <hypothesis_1>
+...
+Hypothesis_n: <hypothesis_n>
+
+After every experiment, draw conclusions from the data, update the hypothesis list and design new experiments that test *all* remaining hypotheses, using both local edits (edit_images) and global changes (text2image). Only keep a hypothesis as the leading one if the evidence (activations at least as high as previous experiments) supports it. You may re-run or modify previous experiments if results were unclear.
+
+Keep experimenting until every hypothesis is confirmed or rejected. Only when you are confident after several confirming experiments, give your final answer in this format and with no code block:
+
+[DESCRIPTION]: <final description; selective (e.g. "dogs running on grass", not just "dog") and complete. If the unit is selective for several concepts, list them separated by logical "OR".>
+[LABEL]: <short label for the concept(s), e.g. "grass surrounding animals", "wheels on cars", "text on computer screens">

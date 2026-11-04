@@ -1,0 +1,17 @@
+# Everything local: every role served by Ollama Qwen models (no API calls).
+# ollama pull qwen2.5vl:7b && ollama pull qwen3:8b
+backbones:
+  text_agent:
+    provider: ollama
+    model: qwen3:8b
+    supports_vision: false
+    temperature: 0.6
+    max_tokens: 8192
+    enable_thinking: true
+  fast_text:
+    provider: ollama
+    model: qwen3:8b
+    supports_vision: false
+    temperature: 0.7
+    max_tokens: 2048
+    enable_thinking: false

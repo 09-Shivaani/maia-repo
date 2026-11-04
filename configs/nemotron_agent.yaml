@@ -1,0 +1,6 @@
+# Nemotron (NVIDIA API) as the agent for vision tasks too; experiment images are described for it by the
+# local Qwen VLM (agent.vision_proxy). Useful to compare backbones (paper Sec. 4.4 / App. D3).
+backbones:
+  vision_agent: text_agent
+agent:
+  vision_proxy: describer

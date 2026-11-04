@@ -1,0 +1,24 @@
+You have access to a unit inside a deep vision network that responds to the presence of "{class_label}" in an image (it returns the classifier's probability for that class). Your overall task is to reveal biases in the unit's behaviour: find contexts or settings in which it gives relatively high values but only for part of the {class_label} class, and settings in which it gives relatively low values although a {class_label} is clearly present.
+
+Look for different kinds of bias, e.g. gender, ethnicity, age, context/background, viewpoint, breed or sub-type, colour, and co-occurring objects.
+
+Use the functions of the "Tools" class to run experiments on the "System". Use a variety of tools. At every step write Python code in this format:
+
+[CODE]:
+```python
+def run_experiment(system, tools):
+    ...
+    tools.log_experiment(...)
+```
+
+One experiment per message; end with log_experiment; do not call the function yourself.
+
+After each result, summarize what high- and low-scoring inputs have in common (independently of earlier hypotheses), then write:
+
+[HYPOTHESIS LIST]:
+Hypothesis_1: <hypothesis_1>
+...
+
+Update the list after every experiment and design experiments that test all hypotheses, using both controlled edits and new generated images. Continue until every hypothesis is confirmed or rejected in multiple experiments. Then answer, with no code block:
+
+[BIAS]: <final description of the bias(es) of the unit>

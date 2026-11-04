@@ -1,0 +1,97 @@
+# Base configuration. Task configs `inherit:` nothing by default and are merged over this file.
+# Any value can be overridden on the command line: --set backbones.vision_agent.model=qwen2.5vl:32b
+seed: 42
+device: auto            # auto | cuda | cuda:1 | cpu
+
+paths:
+  data_root: data
+  cc3m_images: data/cc3m/images          # real-image pool (replaces ImageNet val for dataset_exemplars)
+  exemplar_cache: outputs/exemplars      # scripts/compute_exemplars.py writes here
+  spawrious_root: data/spawrious
+  text_corpus: data/text/wikitext103_train.jsonl
+  bold_dir: data/bold
+  stereoset: data/stereoset/dev.json
+  clip_dissect_concepts: data/concepts/20k.txt
+  outputs: outputs
+
+# ---------------------------------------------------------------------------
+# Model backbones. Providers: nvidia | ollama | vllm | lmstudio | hf | openai
+# API keys are read from environment variables (put them in .env, which is git-ignored).
+# A string value aliases another role.
+# ---------------------------------------------------------------------------
+backbones:
+  # Agent for vision tasks. Must see images -> local Qwen VLM.
+  vision_agent:
+    provider: ollama
+    model: qwen2.5vl:7b
+    supports_vision: true
+    temperature: 0.0
+    max_tokens: 4096
+    enable_thinking: false
+    max_images_per_message: 30
+  # Independent VLM for describe_images / summarize_images (fresh context each call).
+  describer:
+    provider: ollama
+    model: qwen2.5vl:7b
+    supports_vision: true
+    temperature: 0.0
+    max_tokens: 512
+    enable_thinking: false
+  # Strong text model (NVIDIA API): MAIA-NLP / MAIA-Circuit agent and evaluation LMs.
+  text_agent:
+    provider: nvidia
+    model: nvidia/nemotron-3-ultra-550b-a55b
+    api_key_env: NVIDIA_API_KEY
+    temperature: 1.0
+    top_p: 0.95
+    max_tokens: 16384
+    enable_thinking: true
+    stream: true
+  # Fast text model (NVIDIA API) for high-volume text tools (counterfactuals, perturbations).
+  fast_text:
+    provider: nvidia
+    model: nvidia/nemotron-3.5-bolt-e4b
+    api_key_env: NVIDIA_API_KEY_BOLT
+    temperature: 1.0
+    top_p: 0.95
+    max_tokens: 2048
+    enable_thinking: true
+    stream: true
+  prompt_generator: text_agent   # predictive evaluation (paper Fig. 3a)
+  prompt_selector: text_agent    # predictive evaluation (paper Fig. 3c)
+  judge: text_agent              # automatic 2AFC proxy / bias matching
+
+agent:
+  max_rounds: 25
+  exec_timeout: 1800
+  # If the agent backbone is text-only, route experiment images through this VLM as text.
+  vision_proxy: describer
+
+tools:
+  text2image:            # MAIA's text2image tool (paper: Stable Diffusion v1.5)
+    backend: diffusers
+    model: stable-diffusion-v1-5/stable-diffusion-v1-5
+    steps: 50
+    guidance: 7.5
+    batch_size: 4
+    seed: 42
+  editor:                # MAIA's edit_images tool (paper: InstructPix2Pix)
+    model: timbrooks/instruct-pix2pix
+    steps: 50
+    guidance: 7.5
+    image_guidance: 1.5
+    seed: 42
+  exemplars_k: 15
+
+evaluation:
+  # Paper uses DALL-E 3 to render evaluation prompts. Without an OpenAI key we use SDXL;
+  # set backend: dalle3 to match the paper exactly.
+  text2image:
+    backend: diffusers
+    model: stabilityai/stable-diffusion-xl-base-1.0
+    steps: 30
+    guidance: 7.0
+    batch_size: 2
+    seed: 123
+  n_prompts: 7
+  n_bootstrap: 1000

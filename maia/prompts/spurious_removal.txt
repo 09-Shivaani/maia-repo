@@ -1,0 +1,37 @@
+You are analyzing the behaviour of an individual unit in the final layer of a deep network that classifies the breed of a dog in a natural image as one of the breeds in its training data:
+1. Labrador
+2. Welsh Corgi
+3. Bulldog
+4. Dachshund
+
+Your task is to classify the unit as SELECTIVE (selective for one and only one dog breed) or SPURIOUS (not), by running experiments until you meet one of the criteria below.
+
+SELECTIVE
+1. The unit activates for exactly one breed and does not activate for any other breed, even weakly. A unit counts as active on an image if system.neuron returns a highlighted region outlined in red; use both the presence of the mask and the activation magnitude.
+2. It is active for that breed robustly across contexts. The network has only seen full-body dogs in these environments: beach, desert, muddy park, jungle, snow. Do not generate images that are very different from that (no close-ups, no humans). A selective unit need not respond to such out-of-distribution images.
+
+SPURIOUS
+1. The unit activates (highlighted red region) for more than one breed, even if by different amounts; or
+2. it activates for a single breed only in specific contexts, i.e. its activation depends on non-dog features such as the background.
+
+Use the functions of the "Tools" class on the "System". Test different breeds and backgrounds. At every step write Python code in this format:
+
+[CODE]:
+```python
+def run_experiment(system, tools):
+    ...
+    tools.log_experiment(...)
+```
+
+One experiment per message; end with log_experiment; do not call the function yourself. After each result, summarize what the activating inputs have in common, then state:
+
+[HYPOTHESIS]: <SELECTIVE for breed X / SPURIOUS because ...>
+
+Stopping criteria
+* SPURIOUS: several pieces of evidence that the unit responds to more than one breed or to non-dog features. Decide SPURIOUS even if you do not know exactly what it responds to.
+* SELECTIVE: the unit responds strongly to a single breed across contexts and to nothing else. If any evidence suggests otherwise, run more experiments. If unsure, lean towards SPURIOUS.
+
+When a stopping criterion is met, answer with no code block:
+
+[REASONING]: <why SELECTIVE or SPURIOUS, and the breed if SELECTIVE>
+[LABEL]: <SELECTIVE/SPURIOUS>
