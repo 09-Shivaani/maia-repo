@@ -28,6 +28,17 @@ def _shared(key, factory):
     return _SHARED[key]
 
 
+class _LazyShared:
+    """Callable that builds a shared model on first use (diffusion pipelines are ~4 GB each in fp32,
+    and many agent runs never call text2image / edit_images)."""
+
+    def __init__(self, key, factory):
+        self.key, self.factory = key, factory
+
+    def __call__(self, *args, **kwargs):
+        return _shared(self.key, self.factory)(*args, **kwargs)
+
+
 def build_vision_tools(cfg: dict, ablation: str = "full", t2i_cfg: dict | None = None):
     from maia.vision.generation import build_editor, build_text2image
     from maia.vision.tools import VisionTools
@@ -37,10 +48,10 @@ def build_vision_tools(cfg: dict, ablation: str = "full", t2i_cfg: dict | None =
     t2i_cfg = t2i_cfg or cfg["tools"]["text2image"]
     t2i = editor = None
     if "text2image" in allowed:
-        t2i = _shared(("t2i", t2i_cfg.get("backend"), t2i_cfg.get("model")), lambda: build_text2image(t2i_cfg, device))
+        t2i = _LazyShared(("t2i", t2i_cfg.get("backend"), t2i_cfg.get("model")), lambda: build_text2image(t2i_cfg, device))
     if "edit_images" in allowed:
         ecfg = cfg["tools"]["editor"]
-        editor = _shared(("edit", ecfg.get("model")), lambda: build_editor(ecfg, device))
+        editor = _LazyShared(("edit", ecfg.get("model")), lambda: build_editor(ecfg, device))
     return VisionTools(
         describer=backbone_from_config(cfg, "describer"),
         text2image=t2i,

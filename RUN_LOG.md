@@ -43,7 +43,7 @@ images would be silently truncated, so a 32k-context tag was created and used fo
 printf 'FROM qwen2.5vl:7b\nPARAMETER num_ctx 32768\n' > Modelfile && ollama create qwen2.5vl:7b-32k -f Modelfile
 # all vision runs: --set backbones.vision_agent.model=qwen2.5vl:7b-32k backbones.describer.model=qwen2.5vl:7b-32k
 ```
-git identity for commits set repo-locally to the existing repo author (D Shivaani).
+git identity set repo-locally to D Shivaani with the GitHub noreply address (push of the private email is blocked by the account's email-privacy setting).
 All commands are run with `PYTHONUTF8=1` in addition to the encoding fix below.
 
 ## Stage 2 — smoke tests
@@ -56,9 +56,9 @@ All commands are run with `PYTHONUTF8=1` in addition to the encoding fix below.
 | `run_circuits.py synthetic --seeds 0 --no-agent` (baselines only, written to outputs/noagent/) | OK in 20 s. F1 correlation / attribution / greedy: xor 0.86/1.00/1.00, and_or 0.55/1.00/0.86, parity3 0.15/1.00/1.00 |
 
 ### Bugs fixed
-1. `5fcca45` — text files read/written without an encoding; on Windows that means cp1252, which garbles
+1. `c16e2f8` — text files read/written without an encoding; on Windows that means cp1252, which garbles
    `maia/prompts/nlp_api.txt` (non-ASCII) and other UTF-8 data. Now `encoding="utf-8"` everywhere.
-2. `c3331d4` — `download_datasets.py` ran `python -m img2dataset`, which fails (no `__main__`), so
+2. `fa6cfe3` — `download_datasets.py` ran `python -m img2dataset`, which fails (no `__main__`), so
    CC3M never downloaded. Now calls `img2dataset.main()`.
 
 ## Stage 3 — data (reduced plan: only what the reduced experiments need)
