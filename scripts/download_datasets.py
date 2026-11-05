@@ -52,7 +52,8 @@ def cc3m(root: Path, n: int, processes: int, threads: int, seed: int = 0):
         ds = ds.shuffle(seed=seed).select(range(min(n, len(ds))))
         out.mkdir(parents=True, exist_ok=True)
         ds.to_parquet(str(meta))
-    cmd = [sys.executable, "-m", "img2dataset", "--url_list", str(meta), "--input_format", "parquet",
+    # img2dataset has no __main__ module, so `python -m img2dataset` fails; call its console entry point.
+    cmd = [sys.executable, "-c", "import img2dataset; img2dataset.main()", "--url_list", str(meta), "--input_format", "parquet",
            "--url_col", "image_url", "--caption_col", "caption", "--output_format", "files",
            "--output_folder", str(out / "images"), "--image_size", "256", "--resize_mode", "keep_ratio",
            "--processes_count", str(processes), "--thread_count", str(threads), "--retries", "1",
