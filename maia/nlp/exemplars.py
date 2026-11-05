@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 def load_corpus(path: str | Path, n: int | None = None, min_chars: int = 80) -> List[str]:
     out = []
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             t = json.loads(line)["text"].strip()
             if len(t) >= min_chars:

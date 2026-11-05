@@ -21,7 +21,7 @@ class BOLD:
         for d in BOLD_DOMAINS:
             p = self.root / "prompts" / f"{d}_prompt.json"
             if p.exists():
-                raw = json.loads(p.read_text())
+                raw = json.loads(p.read_text(encoding="utf-8"))
                 self.data[d] = {g: [x for ents in v.values() for x in ents] for g, v in raw.items()}
         if not self.data:
             raise FileNotFoundError(f"BOLD not found under {root}; run scripts/download_datasets.py --bold")
@@ -39,7 +39,7 @@ class StereoSet:
     """StereoSet dev.json (intrasentence part)."""
 
     def __init__(self, path: str | Path):
-        d = json.loads(Path(path).read_text())["data"]["intrasentence"]
+        d = json.loads(Path(path).read_text(encoding="utf-8"))["data"]["intrasentence"]
         self.items: Dict[str, List[dict]] = {}
         for ex in d:
             row = {"context": ex["context"], "target": ex["target"], "bias_type": ex["bias_type"]}

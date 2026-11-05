@@ -105,4 +105,4 @@ class CLIPDissect:
 
 
 def load_concept_list(path: str | Path) -> List[str]:
-    return [l.strip() for l in Path(path).read_text().splitlines() if l.strip()]
+    return [l.strip() for l in Path(path).read_text(encoding="utf-8").splitlines() if l.strip()]

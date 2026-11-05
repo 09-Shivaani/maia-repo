@@ -93,12 +93,12 @@ def compute_layer_exemplars(lm: LoadedModel, layer: str, image_paths: list[str],
         out_path = Path(out_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         np.savez_compressed(out_path, **res)
-        (out_path.with_suffix(".paths.json")).write_text(json.dumps(image_paths))
+        (out_path.with_suffix(".paths.json")).write_text(json.dumps(image_paths), encoding="utf-8")
     return res
 
 
 def load_exemplars(path: str | Path):
     path = Path(path)
     d = np.load(path)
-    paths = json.loads(path.with_suffix(".paths.json").read_text())
+    paths = json.loads(path.with_suffix(".paths.json").read_text(encoding="utf-8"))
     return d["acts"], d["idx"], paths

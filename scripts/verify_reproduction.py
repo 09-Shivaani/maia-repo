@@ -37,7 +37,7 @@ def main():
     tdir = ROOT / cfg["paths"]["outputs"] / "tables"
     n_pass = n_total = 0
     for f in sorted(tdir.glob("predictive_*_all_*.json")):
-        s = json.loads(f.read_text())["overall"]
+        s = json.loads(f.read_text(encoding="utf-8"))["overall"]
         if args.maia in s and args.baseline in s:
             n_total += 1
             n_pass += check(f"{f.stem}: MAIA > {args.baseline}", s[args.maia]["pos"][0] > s[args.baseline]["pos"][0],
@@ -49,7 +49,7 @@ def main():
                             f"{s[args.maia]['pos'][0]:.2f} vs {s['human']['pos'][0]:.2f}")
     t2 = tdir / "table2_spurious.json"
     if t2.exists():
-        rows = {r["method"]: r["test_acc"] for r in json.loads(t2.read_text())}
+        rows = {r["method"]: r["test_acc"] for r in json.loads(t2.read_text(encoding="utf-8"))}
         if "MAIA" in rows:
             for ref in ("Original Model", "All"):
                 if ref in rows and not isinstance(rows[ref], str):
@@ -57,13 +57,13 @@ def main():
                     n_pass += check(f"Table 2: MAIA > {ref}", rows["MAIA"] > rows[ref], f"{rows['MAIA']:.3f} vs {rows[ref]:.3f}")
     for f in (tdir / "table1_llm_2afc.json",):
         if f.exists():
-            for k, v in json.loads(f.read_text()).items():
+            for k, v in json.loads(f.read_text(encoding="utf-8")).items():
                 if "maia" in k.split(" vs ")[0]:
                     n_total += 1
                     n_pass += check(f"2AFC {k} > 0.5", v[0] > 0.5, f"{v[0]:.3f} [{v[1]:.3f}, {v[2]:.3f}]")
     cs = tdir / "circuit_synthetic.json"
     if cs.exists():
-        rows = json.loads(cs.read_text())
+        rows = json.loads(cs.read_text(encoding="utf-8"))
         import numpy as np
 
         mf = [r["maia"]["f1"] for r in rows if "maia" in r]

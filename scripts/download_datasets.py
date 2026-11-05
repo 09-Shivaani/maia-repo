@@ -100,7 +100,7 @@ def text_corpus(root: Path, n_par: int):
     out.parent.mkdir(parents=True, exist_ok=True)
     ds = load_dataset("Salesforce/wikitext", "wikitext-103-raw-v1", split="train")
     k = 0
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         for row in ds:
             t = row["text"].strip()
             if len(t) < 80 or t.startswith("="):
@@ -134,7 +134,7 @@ def bills(root: Path, layers=range(0, 48, 4), neurons=range(0, 6400, 64)):
                 rows.append({"layer": l, "neuron": n, "explanation": sc["explanation"], "score": sc.get("scored_simulation", {}).get("ev_correlation_score")})
             except Exception as e:  # some neurons are missing
                 print(f"skip {l}/{n}: {e}")
-    (out / "gpt2-xl.jsonl").write_text("\n".join(json.dumps(r) for r in rows))
+    (out / "gpt2-xl.jsonl").write_text("\n".join(json.dumps(r) for r in rows), encoding="utf-8")
     print(f"saved {len(rows)} explanations")
 
 

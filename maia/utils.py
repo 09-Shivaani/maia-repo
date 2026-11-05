@@ -111,12 +111,12 @@ def ensure_dir(p: str | Path) -> Path:
 def write_json(obj: Any, path: str | Path) -> None:
     path = Path(path)
     ensure_dir(path.parent)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=2, default=_json_default)
 
 
 def read_json(path: str | Path) -> Any:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 

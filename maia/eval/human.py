@@ -38,7 +38,7 @@ def make_2afc_hits(gt: Dict[str, str], descs: Dict[str, Dict[str, str]], out_csv
             rows.append({"neuron": nid, "ground_truth": g, "description_1": d1, "description_2": d2,
                          "method_1": m1, "method_2": m2})
     Path(out_csv).parent.mkdir(parents=True, exist_ok=True)
-    with open(out_csv, "w", newline="") as f:
+    with open(out_csv, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
@@ -48,7 +48,7 @@ def make_2afc_hits(gt: Dict[str, str], descs: Dict[str, Dict[str, str]], out_csv
 def analyze_2afc(results_csv: str | Path, a: str, b: str, choice_col: str = "Answer.choice") -> tuple:
     """Proportion of judgements preferring method a over b (choice_col holds 1 or 2)."""
     wins = []
-    with open(results_csv) as f:
+    with open(results_csv, encoding="utf-8") as f:
         for r in csv.DictReader(f):
             ms = {r["Input.method_1"] if "Input.method_1" in r else r["method_1"],
                   r["Input.method_2"] if "Input.method_2" in r else r["method_2"]}
@@ -103,7 +103,7 @@ def make_utility_hits(descriptions: Dict[str, Dict[str, str]], top_images: Dict[
                 for j, img in enumerate(sets[si]):
                     row[f"set{pos}_img{j + 1}"] = img
             rows.append(row)
-    with open(out_csv, "w", newline="") as f:
+    with open(out_csv, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
